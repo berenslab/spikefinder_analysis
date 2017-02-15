@@ -8,7 +8,7 @@ output: html_notebook
 
 library(ggplot2)
 
-setwd("C:/Users/Luke Edward Rogerson/Documents/Spikefinder & Neurofinder")
+setwd("C:/Users/Luke Edward Rogerson/Documents/GitHub/ns-finder")
 sf_data = read.csv("spikefinder.csv")
 nf_data = read.csv("neurofinder.csv") 
 
@@ -16,7 +16,7 @@ nf_data = read.csv("neurofinder.csv")
 
 
 ```{r}
-measure <- 'rank'
+measure <- 'rank' # corr, info, loglik, rank
 sf_data_comb <- subset(sf_data, label_label == measure, select = c('algo_algorithm', 'label_value', 'dset_dataset'))
 sf_data_comb <- subset(sf_data_comb, algo_algorithm != 'derivative', select = c('algo_algorithm', 'label_value', 'dset_dataset'))
 # sf_group_mean <- aggregate(sf_data_comb$label_value, list(sf_data_comb$algo_algorithm), mean)
@@ -36,17 +36,17 @@ plt <- ggplot(
   stat_summary(fun.y = "mean", fun.ymin = min, fun.ymax = max, geom = "bar", fill = "grey60") +
   geom_point() +
   scale_x_discrete(name="Algorithm") +
-  scale_y_continuous(name=paste("Performance ('", measure, "')", sep = ''),  expand = c(0, 0)) # limits = c(0, 1),
+  scale_y_continuous(name=paste("Performance ('", measure, "')", sep = ''),  expand = c(0, 0))
 
 plt
 
-ggsave(paste("Spikefinder ('", measure, "').eps", sep = ''))
+ggsave(paste("Spikefinder ('", measure, "').eps", sep = ''), width = 3)
 
 ```
 
 ```{r}
 
-measure <- 'precision'
+measure <- 'precision' # combined, exclusion, inclusion, precision
 nf_data_comb <- subset(nf_data, label_label == measure, select = c('algo_algorithm', 'label_value', 'dset_dataset'))
 nf_data_comb <- subset(nf_data_comb, algo_algorithm != 'Test Submission', select = c('algo_algorithm', 'label_value', 'dset_dataset'))
 nf_group_mean <- aggregate(nf_data_comb$label_value, list(nf_data_comb$algo_algorithm), mean)
