@@ -46,7 +46,7 @@ ggsave(paste("Spikefinder ('", measure, "').png", sep = ''), width = 3)
 
 ```{r}
 
-measure <- 'precision' # combined, exclusion, inclusion, precision
+measure <- 'recall' # combined, exclusion, inclusion, precision, recall
 nf_data_comb <- subset(nf_data, label_label == measure, select = c('algo_algorithm', 'label_value', 'dset_dataset'))
 nf_data_comb <- subset(nf_data_comb, algo_algorithm != 'Test Submission', select = c('algo_algorithm', 'label_value', 'dset_dataset'))
 nf_group_mean <- aggregate(nf_data_comb$label_value, list(nf_data_comb$algo_algorithm), mean)
