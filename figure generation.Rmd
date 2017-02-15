@@ -16,7 +16,7 @@ nf_data = read.csv("neurofinder.csv")
 
 
 ```{r}
-measure <- 'rank' # corr, info, loglik, rank
+measure <- 'loglik' # corr, info, loglik, rank
 sf_data_comb <- subset(sf_data, label_label == measure, select = c('algo_algorithm', 'label_value', 'dset_dataset'))
 sf_data_comb <- subset(sf_data_comb, algo_algorithm != 'derivative', select = c('algo_algorithm', 'label_value', 'dset_dataset'))
 # sf_group_mean <- aggregate(sf_data_comb$label_value, list(sf_data_comb$algo_algorithm), mean)
@@ -40,7 +40,7 @@ plt <- ggplot(
 
 plt
 
-ggsave(paste("Spikefinder ('", measure, "').eps", sep = ''), width = 3)
+ggsave(paste("Spikefinder ('", measure, "').png", sep = ''), width = 3)
 
 ```
 
@@ -70,6 +70,6 @@ plt <- ggplot(
 
 plt
 
-ggsave(paste("Neurofinder ('", measure, "').eps", sep = ''))
+ggsave(paste("Neurofinder ('", measure, "').png", sep = ''))
 ```
 
