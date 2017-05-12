@@ -1,0 +1,75 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+
+library(ggplot2)
+
+setwd("C:/Users/Luke Edward Rogerson/Documents/GitHub/ns-finder")
+sf_data = read.csv("spikefinder.csv")
+nf_data = read.csv("neurofinder.csv") 
+
+```
+
+
+```{r}
+measure <- 'loglik' # corr, info, loglik, rank
+sf_data_comb <- subset(sf_data, label_label == measure, select = c('algo_algorithm', 'label_value', 'dset_dataset'))
+sf_data_comb <- subset(sf_data_comb, algo_algorithm != 'derivative', select = c('algo_algorithm', 'label_value', 'dset_dataset'))
+# sf_group_mean <- aggregate(sf_data_comb$label_value, list(sf_data_comb$algo_algorithm), mean)
+# sf_group_thresh <- subset(sf_group_mean, x > 0, select = ('Group.1'))
+# sf_data_comb <- sf_data_comb[sf_data_comb$algo_algorithm %in% sf_group_thresh$Group.1,]
+
+plt <- ggplot(
+    sf_data_comb,
+    aes(x = reorder(algo_algorithm, label_value, mean), y = label_value)
+  ) + 
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.line.x = element_line(color="black", size=1),
+    axis.line.y = element_line(color="black", size=1)
+    ) +
+  stat_summary(fun.y = "mean", fun.ymin = min, fun.ymax = max, geom = "bar", fill = "grey60") +
+  geom_point() +
+  scale_x_discrete(name="Algorithm") +
+  scale_y_continuous(name=paste("Performance ('", measure, "')", sep = ''),  expand = c(0, 0))
+
+plt
+
+ggsave(paste("Spikefinder ('", measure, "').png", sep = ''), width = 3)
+
+```
+
+```{r}
+
+measure <- 'recall' # combined, exclusion, inclusion, precision, recall
+nf_data_comb <- subset(nf_data, label_label == measure, select = c('algo_algorithm', 'label_value', 'dset_dataset'))
+nf_data_comb <- subset(nf_data_comb, algo_algorithm != 'Test Submission', select = c('algo_algorithm', 'label_value', 'dset_dataset'))
+nf_group_mean <- aggregate(nf_data_comb$label_value, list(nf_data_comb$algo_algorithm), mean)
+nf_group_thresh <- subset(nf_group_mean, x > 0.20, select = ('Group.1'))
+nf_data_comb <- nf_data_comb[nf_data_comb$algo_algorithm %in% nf_group_thresh$Group.1,]
+
+plt <- ggplot(
+    nf_data_comb,
+    aes(x = reorder(algo_algorithm, label_value, mean), y = label_value)
+  ) + 
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.line.x = element_line(color="black", size=1),
+    axis.line.y = element_line(color="black", size=1)
+    ) +
+  stat_summary(fun.y = "mean", fun.ymin = min, fun.ymax = max, geom = "bar", alpha = 1, fill = "grey60") +
+  geom_point() +
+  scale_x_discrete(name="Algorithm") +
+  scale_y_continuous(name=paste("Performance ('", measure, "')", sep = ''), limits=c(0, 1), expand = c(0,0))
+
+plt
+
+ggsave(paste("Neurofinder ('", measure, "').png", sep = ''))
+```
+
