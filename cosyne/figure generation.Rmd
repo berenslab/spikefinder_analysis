@@ -72,4 +72,3 @@ plt
 
 ggsave(paste("Neurofinder ('", measure, "').png", sep = ''))
 ```
-
