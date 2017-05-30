@@ -1,0 +1,38 @@
+\begin{thebibliography}{}
+
+\bibitem[Abadi et~al., 2015]{tensorflow2015-whitepaper}
+Abadi, M., Agarwal, A., Barham, P., Brevdo, E., Chen, Z., Citro, C., Corrado,
+  G.~S., Davis, A., Dean, J., Devin, M., Ghemawat, S., Goodfellow, I., Harp,
+  A., Irving, G., Isard, M., Jia, Y., Jozefowicz, R., Kaiser, L., Kudlur, M.,
+  Levenberg, J., Man\'{e}, D., Monga, R., Moore, S., Murray, D., Olah, C.,
+  Schuster, M., Shlens, J., Steiner, B., Sutskever, I., Talwar, K., Tucker, P.,
+  Vanhoucke, V., Vasudevan, V., Vi\'{e}gas, F., Vinyals, O., Warden, P.,
+  Wattenberg, M., Wicke, M., Yu, Y., and Zheng, X. (2015).
+\newblock {TensorFlow}: Large-scale machine learning on heterogeneous systems.
+\newblock Software available from tensorflow.org.
+
+\bibitem[Bengio et~al., 2013]{bengio2013estimating}
+Bengio, Y., L{\'e}onard, N., and Courville, A. (2013).
+\newblock Estimating or propagating gradients through stochastic neurons for
+  conditional computation.
+\newblock {\em arXiv preprint arXiv:1308.3432}.
+
+\bibitem[Chollet et~al., 2015]{chollet2015keras}
+Chollet, F. et~al. (2015).
+\newblock Keras.
+\newblock \url{https://github.com/fchollet/keras}.
+
+\bibitem[Pedregosa et~al., 2011]{scikit-learn}
+Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B., Grisel,
+  O., Blondel, M., Prettenhofer, P., Weiss, R., Dubourg, V., Vanderplas, J.,
+  Passos, A., Cournapeau, D., Brucher, M., Perrot, M., and Duchesnay, E.
+  (2011).
+\newblock Scikit-learn: Machine learning in {P}ython.
+\newblock {\em Journal of Machine Learning Research}, 12:2825--2830.
+
+\bibitem[Rupprecht and Gerhard, 2017]{ruppprecht2017embeddingspace}
+Rupprecht, P. and Gerhard, S. (2017).
+\newblock Spikefinder elephant.
+\newblock \url{https://github.com/PTRRupprecht/Spikefinder-Elephant}.
+
+\end{thebibliography}
