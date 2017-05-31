@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99d (TeX Live 2016/Debian)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: elephant.aux
+The style file: apalike.bst
+Database file #1: elephant.bib
+You've used 5 entries,
+            1935 wiz_defined-function locations,
+            497 strings with 5346 characters,
+and the built_in function-call counts, 3223 in all, are:
+= -- 267
+> -- 330
+< -- 2
++ -- 126
+- -- 126
+* -- 332
+:= -- 618
+add.period$ -- 15
+call.type$ -- 5
+change.case$ -- 87
+chr.to.int$ -- 5
+cite$ -- 5
+duplicate$ -- 57
+empty$ -- 97
+format.name$ -- 134
+if$ -- 560
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 2
+newline$ -- 28
+num.names$ -- 15
+pop$ -- 77
+preamble$ -- 1
+purify$ -- 87
+quote$ -- 0
+skip$ -- 48
+stack$ -- 0
+substring$ -- 91
+swap$ -- 2
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 30
+warning$ -- 0
+while$ -- 12
+width$ -- 0
+write$ -- 63
