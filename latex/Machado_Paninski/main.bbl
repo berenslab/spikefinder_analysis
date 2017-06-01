@@ -1,0 +1,47 @@
+\begin{thebibliography}{1}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\expandafter\ifx\csname doiprefix\endcsname\relax\def\doiprefix{DOI }\fi
+\providecommand{\bibinfo}[2]{#2}
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem{oopsi}
+\bibinfo{author}{Vogelstein, J.~T.} \emph{et~al.}
+\newblock \bibinfo{journal}{\bibinfo{title}{Fast nonnegative deconvolution for
+  spike train inference from population calcium imaging}}.
+\newblock {\emph{\JournalTitle{Journal of Neurophysiology}}}
+  \textbf{\bibinfo{volume}{104}}, \bibinfo{pages}{3691--3704}
+  (\bibinfo{year}{2010}).
+
+\bibitem{eftychios}
+\bibinfo{author}{Pnevmatikakis, E.~A.} \emph{et~al.}
+\newblock \bibinfo{journal}{\bibinfo{title}{Simultaneous denoising,
+  deconvolution, and demixing of calcium imaging data}}.
+\newblock {\emph{\JournalTitle{Neuron}}} \textbf{\bibinfo{volume}{89}},
+  \bibinfo{pages}{285--299} (\bibinfo{year}{2016}).
+
+\bibitem{oasis}
+\bibinfo{author}{Friedrich, J.}, \bibinfo{author}{Zhou, P.} \&
+  \bibinfo{author}{Paninski, L.}
+\newblock \bibinfo{journal}{\bibinfo{title}{Fast online deconvolution of
+  calcium imaging data}}.
+\newblock {\emph{\JournalTitle{PLOS Computational Biology}}}
+  \textbf{\bibinfo{volume}{13}}, \bibinfo{pages}{e1005423}
+  (\bibinfo{year}{2017}).
+
+\bibitem{mlspike}
+\bibinfo{author}{Deneux, T.} \emph{et~al.}
+\newblock \bibinfo{journal}{\bibinfo{title}{Accurate spike estimation from
+  noisy calcium signals for ultrafast three-dimensional imaging of large
+  neuronal populations in vivo}}.
+\newblock {\emph{\JournalTitle{Nature Communications}}}
+  \textbf{\bibinfo{volume}{7}} (\bibinfo{year}{2016}).
+
+\bibitem{wavenet}
+\bibinfo{author}{van~den Oord, A.} \emph{et~al.}
+\newblock \bibinfo{journal}{\bibinfo{title}{Wavenet: A generative model for raw
+  audio}}.
+\newblock {\emph{\JournalTitle{CoRR abs/1609.03499}}}  (\bibinfo{year}{2016}).
+
+\end{thebibliography}
