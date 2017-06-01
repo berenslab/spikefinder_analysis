@@ -1,0 +1,57 @@
+\documentclass[fleqn,10pt]{wlscirep}
+\title{An encoder-decoder approach for model-based spike inference}
+
+\author[1,*,+]{Timothy A. Machado}
+\author[1]{Liam Paninski}
+\affil[1]{Department of Statistics and Grossman Center for the Statistics of Mind, New York, NY, USA}
+\affil[+]{Current affiliation: Department of Bioengineering, Stanford University, Stanford, CA, USA}
+
+\affil[*]{tim.machado@gmail.com}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview}
+
+In our submission to the Spikefinder competition, we had two main goals. First, we wanted to develop an approach that could take advantage of our strong prior knowledge of $Ca^{2+}$ dynamics in neurons. Second, we wanted to construct a simple means of testing the relative importance of different features of fluorescence data in accurately decoding spikes. While model-based approaches have been used extensively before \cite{oopsi, eftychios, oasis}, we wanted an approach that could also easily incorporate nonlinear models, and enable tractable inference in models that depend on the long-term time history of a neuron's activity. \\
+
+Our inference framework consists of two parts: a linear \emph{encoding model} that takes in spikes and outputs simulated fluorescence traces (trained on paired spike train and fluorescence data), and a simple convolutional neural network to serve as a \emph{decoding model} that outputs estimates of spikes given fluorescence observations and encoding model parameter estimates and which is trained on large datasets simulated from the encoder model. The advantage of this approach (which can be considered a form of data augmentation) is that we can train the decoder model to ``saturation," by providing it as much training data as necessary to achieve good performance.  Importantly, on linear-Gaussian simulated data, our neural network decoder performed comparably to OASIS\cite{oasis}, the state-of-the-art inference method for efficiently solving the spike inference problem under linear-Gaussian assumptions (though OASIS remains significantly faster than the neural network decoder at test time). Moving forward, both the encoder and decoder components presented here can be easily interchanged for more detailed models that might yield further improvements in performance in some experimental settings.
+
+\section{A Linear Encoder to Generate Fluorescence Data}
+
+Instead of directly using the Spikefinder datasets to train a decoding algorithm, we generated simulated training datasets consisting of 5,000 traces, each of length 3,000 timesteps. Each fluorescence trace was generated with the following second-order autoregressive model ($p=2$):
+
+\begin{eqnarray}
+	\it{c}_t = \sum_{k=1}^{p}{\gamma c_{t-k} + a \it{s}_t} \label{eq:ar}\\
+    \it{f}_t = \it{c}_t + \it{b} + \epsilon_t
+    \label{eq:F}
+\end{eqnarray}
+
+The parameterization of each trace generated using Equation \ref{eq:F} was random. The noise was modeled as $\epsilon_t \sim N(0, \sigma_t^2)$. The jump size $a$ of each spike was randomly sampled from a uniform distribution between 0.5 and 1.5. Each simulated spike train, $\it{s}$, was sampled from a homogeneous Poisson process with a mean firing rate between 0 and 2 Hz. The baseline drift component, $\it{b}$, was modeled by low-pass filtering white noise. Instead of a first-order autoregressive model for baseline drift\cite{mlspike}, we found smoother low-frequency noise generated better performing decoders--and also qualitatively more closely match the type of slow drift seen in real fluorescence data. Of these parameters, we found that the baseline drift component was most important as incorporating it significantly improved inference quality. In contrast, the statistics of the simulated spike trains, as well as the randomized jump sizes following each spike, had a much smaller impact on decoder performance. This makes sense, as these parameters governing firing rate would be more significant in a nonlinear $Ca^{2+}$ model.\\
+
+The time constants of the autoregressive model, $\gamma$, and the scale of the noise, $\sigma$, were also sampled from random uniform distributions (such that a single decoder trained on these data could work well across multiple indicators and frame rates), but the precise parameterization was varied between model training sessions. However, in all cases, we found that a wide range of $\gamma$ values could be learned by a single decoder model. For instance, we successfully trained decoder models across data with $\gamma$ values spanning approximate decay times for fast OGB data recorded at 25 Hz, to slow GCaMP6S data recorded at 100 Hz. This is significant as it demonstrates that a single decoding model trained on simulated data can be used to analyze data produced by many different indicators, and many different acquisition rates. Similarly, wide ranges of $\sigma$ values could be learned by single decoders. However, there was a slight performance enhancement seen by training single encoders on mostly low SNR or high SNR data to improve performance on low SNR and high SNR real data, respectively. \\
+
+Finally, we found that in almost all cases, the second-order models (i.e. $p=2$ in Equation \ref{eq:ar}) outperformed first-order models ($p=1$). An exception to this could be seen with OGB datasets, as that sensor displays very rapid rise time kinetics following action potentials and has been previously shown to be especially well-described by first-order models.\cite{oopsi}
+
+\section{A Simple Neural Network Architecture for Decoding Spiking Activity}
+
+To estimate the most likely spike train underlying a given fluorescence trace, we built a convolutional neural network. During training, the network was presented with $\it{f}$ as well as parameter estimates for $\sigma$ and $\gamma$ given by methods published in earlier work.\cite{eftychios} Because the Spikefinder data was upsampled from its native resolution and this introduced artifacts in the power spectrum of each fluorescence trace, we decimated each trace by a factor of 7-10 (depending on the approximate native time resolution of each dataset) before performing subsequent parameter fitting and analysis. The target of the network during training was the set of simulated spike trains, $\it{s}$, used to generate $\it{f}$ using Equation \ref{eq:ar}. \\
+
+We found a fairly simple architecture inspired by research into the construction of generative models for audio data to be effective.\cite{wavenet} In brief, the network consists of four 1D dilated convolutional layers containing 100 units, a filter size of 32, and rectified-linear (relu) nonlinearities. The first layer was dilated by a factor of 1, the second layer by 2, the third by 4 and the fourth by a factor of 8. Dropout (rate = 0.5) at each layer was also used. Finally, a fifth 1D convolutional layer with one unit, a filter size of one, and a relu nonlinearity was used to read-out a nonnegative estimate of $\it{s}$ from each $\it{f}$ vector provided. \\
+
+This architecture contained about 950,000 parameters and could be trained on a simulated dataset of 5,000 traces in about 20 minutes (over 20 epochs) using the Google ML Engine. We found that a single model trained on simulated data that spanned a wide range of $\sigma$ and $\gamma$ values performed well, but that an ensemble of four models, each trained on a slightly different simulated dataset, worked better--as some decoders tended to work better or worse on each Spikefinder dataset. For our submission, we chose the decoding model that worked best for each dataset to use as our submission. For dataset 5, which had high firing rates, we found that convolving the results with a small Gaussian kernel resulted in a modest improvement to our inference quality.
+
+\section{Discussion}
+
+Our experience with the competition was productive in that it yielded a new approach for spike inference, as well as a few lessons and ideas that will be useful moving forward. \\
+
+We think the contest was a valuable exercise overall, but we have a few ideas for how it could be improved. First, the data supplied often contained contamination from adjacent neurons or other signals that resembled action potentials that were not present in the ground truth. In addition, the process of resampling each dataset to a fixed frame rate simplified the contest, but also introduced artifacts into the data that are not typically seen in a real experimental setting. To remedy these issues, perhaps the next competition can be conducted on entirely unprocessed image patches instead of upsampled univariate traces. \\
+
+In terms of the results of the contest, we find it interesting that linear-Gaussian model-based methods still remain fairly competitive versus nonlinear approaches--even on GCaMP6S data exhibiting significant nonlinearities. We experimented with training nonlinear encoding models but obtained inconsistent improvements; this would be a worthy direction for further research (and perhaps other entries in the competition obtained better results with nonlinear models than we did). \\
+
+More generally, this raises the question of what the actual performance bounds of an ideal decoder are. Certainly the results of the contest have revealed some insight here: there is considerable dataset-dependent variance in the performance of each algorithm, and many different approaches were tried. But how can we evaluate performance in the case where, as is usually the case, ground truth information is not available? One potential approach, enabled by our framework, is to construct a neuron- or dataset-specific encoder model. Then, a decoder model can be trained to saturation on synthetic data matched to the neuron or dataset of interest. Then we can quantify the performance of this highly-trained decoder on simulated data drawn from the encoder. This process may be valuable for computing a neuron- or dataset-dependent approximate ``bootstrap ceiling" on achievable spike inference performance (assuming the estimated encoding model provides an accurate summary of the fluorescent data generation process).
+
+\bibliography{refs}
+
+\end{document}
