@@ -1,14 +1,14 @@
 ---
 # To compile to PDF:
-# pandoc -F pandoc-citeproc patrickmineault.md -o patrickmineault.pdf
+# pandoc -F pandoc-citeproc description.md -o description.pdf
 # For LaTeX:
-# pandoc -s -F pandoc-citeproc patrickmineault.md -o patrickmineault.tex
-# pdflatex patrickmineault.tex
+# pandoc -s -F pandoc-citeproc description.md -o description.tex
+# pdflatex description.tex
 title: "Spike finder submission"
 author: "Patrick Mineault"
 date: "19/05/2017"
 output: pdf_document
-bibliography: patrickmineault.bib
+bibliography: refs.bib
 ---
 
 # Introduction
