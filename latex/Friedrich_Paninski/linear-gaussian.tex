@@ -1,0 +1,75 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{hyperref}
+\usepackage[top=0.85in,left=1in,right=1in,bottom=1.47in,footskip=0.75in]{geometry}
+\usepackage{amsmath,amssymb,bm}
+
+
+\title{Spike inference using a linear-Gaussian generative model}
+
+\author{Johannes Friedrich, Liam Paninski\\
+Department of Statistics, Grossman Center for the Statistics of Mind,\\ and Center for Theoretical Neuroscience, Columbia University, New York, NY, USA}
+
+
+
+\begin{document}
+
+\maketitle
+
+\abstract{
+We have recently proposed a fast online active set method to infer spike rates (OASIS) \cite{friedrich2016}. While it follows previous work in casting the activity extraction problem as a sparse non-negative deconvolution problem \cite{vogelstein2010}, we have obtained orders of magnitude speed-ups and enabled real-time simultaneous deconvolution for large-scale datasets. Although further improving the accuracy of activity inference has not been our focus, we nevertheless entered OASIS into the Spikefinder competition to gain some intuition regarding how far a simple linear forward model lacks behind nonlinear models and methods -- apparently not a lot. As an unsupervised model-based method OASIS does not require training data and its parameters can be estimated from the fluorescence data. However, in our submission we made use of the available training data to set some model parameters and to augment OASIS with a linear convolution as post-processing step to further refine the results, where the convolution kernel is learned based on the training data using linear regression.
+}
+
+
+
+\section{OASIS}
+
+We assume we observe the fluorescence signal for $T$ timesteps, and denote by $s_t$ the number of spikes that the
+neuron fired at the $t$-th timestep, $t = 1, ..., T$. We approximate the calcium concentration dynamics $\bm c$ using a stable
+autoregressive process of order $p$ (AR($p$)). 
+\begin{equation}
+c_t= \sum_{i=1}^p \gamma_i c_{t-i}+s_t. \label{eq:dynamics}
+\end{equation}
+The observed fluorescence $\bm y\in\mathbb{R}^T$ is related to the calcium concentration as~\cite{vogelstein2010}:
+\begin{equation}
+y_t = a\, c_t+b+\epsilon_t,\quad \epsilon_t \sim \mathcal{N}(0,\sigma^2) \label{eq:observation}
+\end{equation}
+where $a$ is a non-negative scalar, $b$ is a scalar offset parameter, and the noise is assumed to be i.i.d.\ zero mean Gaussian with variance $\sigma^2$. We assume units such that $a=1$ without loss of generality. 
+
+
+The goal of calcium deconvolution is to extract an estimate $\hat{\bm s}$ of the neural activity $\bm s$ from the vector of observations $\bm y$.
+As discussed in~\cite{friedrich2016,vogelstein2010}, this leads to the following non-negative LASSO problem for estimating the calcium concentration:
+\begin{equation}
+\underset{\hat{\bm c},\hat{\bm s}}{\textrm{minimize}}\quad  \tfrac{1}{2}\|b\bm 1+\hat{\bm c}-\bm y\|^2 + \lambda \|\hat{\bm s}\|_1\quad
+\textrm{subject to\quad}  \hat{s}_t=\hat{c}_t-\sum_{i=1}^p \gamma_i \hat{c}_{t-i} \ge 0 \label{eq:problem}
+\end{equation}
+where the $\ell_1$ penalty on $\hat{\bm s}$ enforces sparsity of the neural activity. Following the approach in~\cite{vogelstein2010}, note that the spike signal $\hat{\bm s}$ is relaxed from non-negative integers to arbitrary non-negative values. 
+
+Problem~(\ref{eq:problem}) could be solved using generic convex program solvers, however, it is much faster to use OASIS \cite{friedrich2016}, a dual active set method that generalizes the pool adjacent violators algorithm, a classic algorithm for isotonic regression \cite{barlow1972}. The dual active set method yields an exact solution of Eq.~(\ref{eq:problem}) for $p=1$ and merely a greedy one for $p\ge2$. Although an exact solution for the latter can be obtained by the primal active set method presented in \cite{friedrich2017}, we used $p=2$ in the Spikefinder competition and the greedy but faster dual method which yielded similar scores (i.e.\ correlation values with ground truth).
+
+The noise level $\sigma$ is typically well estimated from the power spectral density (PSD) of $\bm y$ \cite{pnevmatikakis2016}. The parameters $\gamma_i$ are either known a priori for a given calcium indicator or estimated from the autocovariance function of $\bm y$, and possibly improved by fitting them directly. 
+The sparsity parameter $\lambda$ can be chosen implicitly by inclusion of the residual sum of squares (RSS) as a hard constraint and not as a penalty term in the objective function \cite{friedrich2016,pnevmatikakis2016}. The dual problem
+\begin{equation}
+\underset{\hat{b},\hat{\bm c},\hat{\bm s}}{\textrm{minimize}}\quad  \|\hat{\bm s}\|_1\quad
+\textrm{subject to\quad}   \hat{s}_t=\hat{c}_t-\sum_{i=1}^p \gamma_i \hat{c}_{t-i} \ge 0 \quad{\rm and }\quad
+\|\hat{b}\bm 1+\hat{\bm c}-\bm y\|^2 \le \hat{\sigma}^2T. \label{eq:dual}
+\end{equation}
+is solved by iterative warm-started runs of OASIS to solve Eq.~(\ref{eq:problem}) while adjusting $\lambda$, $\hat{b}$ (and optionally also $\gamma_i$) between runs until Eq.~(\ref{eq:dual}) holds. We refer the reader to \cite{friedrich2017} for the full algorithmic details.
+
+
+\section{Application to Spikefinder datasets}
+
+The above parameter choices rely on a robust noise estimate $\hat{\sigma}$, however, the resampling of each Spikefinder dataset to a fixed frame rate introduced artifacts into the data that corrupted the autocovariance and PSD. %Because we did not obtain reliable noise and AR estimates based on the preprocessed data, we used the prior knowledge gleaned from the training data. 
+We did not obtain reliable noise and AR estimates based on the preprocessed data, however, due to the availability of training data, we have this information as prior knowledge. 
+We determined the parameters for baseline, sparsity and AR dynamics based on the training datasets and kept them fix for each test trace, thus not accounting for differences between neurons within one dataset. Specifically, we determined six parameters: the percentile value and window length to estimate the baseline using a running percentile, the two AR coefficients, and the slope and offset of a linear function that determines the sparsity parameter $\lambda$ as function of the noise. The latter was estimated on traces that were decimated by a factor of 10 to counteract the artifacts that had been introduced by upsampling the raw data.
+
+Running OASIS with the known parameters yields directly an estimate $\hat{\bm s}$ of the neural activity. This estimate was already good for datasets 6-10, but noticeably improved for the first 5 datasets by convolving it with some kernel $\bm k$, to obtain the final estimate $\hat{\bm s}'=\hat{\bm s}*\bm k$. The kernel adjusts for mismatches between the actual calcium response kernel and the AR(2) model, smoothes the estimate, and accounts for the uncertainty of the exact spike timings by distributing spikes as spike rates over a few time bins. We used a kernel width of $30$ bins and obtained it by averaging the closed form solutions of the least squares linear regression problem $\bm k = \arg\min_{\bm k} \|\hat{\bm s}*\bm k-\bm s\|^2$ for each true spike train $\bm s$ in the training set.
+Because the evaluation criterion in Spikefinder was correlation not the residual sum of squares, we considered to further optimize the kernel for this specific criterion using gradient decent initialized at the least squares solution; however, we did not obtain significant improvements.
+
+The code, including a Docker file, can be found on GitHub: \href{https://github.com/j-friedrich/spikefinder_submission}{https://github.com/j-friedrich/spikefinder\_submission}.
+ 
+
+\bibliographystyle{unsrt}
+\bibliography{linear-gaussian}
+
+\end{document}
