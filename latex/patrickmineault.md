@@ -122,11 +122,11 @@ We originally fit one large model for all recordings. We then created refined ve
 
 ## Summary of submissions
 
-Name     | Description                              | Test score | Train score
----------|------------------------------------------|------------|------------
-Purgatio | Learned long-range features + refinement | 0.464      | 0.581
-Inferno  | Learned long-range features              | 0.419      | 0.511
-Paradiso | Fixed long-range features                | 0.410      | 0.465
+Name       | Description                              | Test score | Train score
+-----------|------------------------------------------|------------|------------
+Purgatorio | Learned long-range features + refinement | 0.464      | 0.581
+Inferno    | Learned long-range features              | 0.419      | 0.511
+Paradiso   | Fixed long-range features                | 0.410      | 0.465
 
 ## Critique
 
