@@ -88,7 +88,9 @@ minimized:
 
 While we've cast this problem in the style of a generalized linear model
 (Theis et al. 2016), we do not limit ourselves to choices of \(g\) which
-lead to convex optimization problems. We examine each component in turn.
+lead to convex optimization problems. We examine each component in
+turn\footnote{The code that fits this model can be downloaded at
+  \url{https://github.com/patrickmineault/spikefinder_submission}}.
 
 \subsection{\texorpdfstring{Basis transformation
 \(g\)}{Basis transformation g}}\label{basis-transformation-g}
@@ -308,7 +310,7 @@ dataset using the model refined for it.
 Name & Description & Test score & Train score\tabularnewline
 \midrule
 \endhead
-Purgatio & Learned long-range features + refinement & 0.464 &
+Purgatorio & Learned long-range features + refinement & 0.464 &
 0.581\tabularnewline
 Inferno & Learned long-range features & 0.419 & 0.511\tabularnewline
 Paradiso & Fixed long-range features & 0.410 & 0.465\tabularnewline

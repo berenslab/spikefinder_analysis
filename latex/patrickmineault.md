@@ -27,7 +27,9 @@ Our goal is then to estimate the parameters of a basis transformation $g$ and an
 \text{s.t. } L(\mu_{ij}, y_{ij}) & \text{ is minimized}
 \end{align*}
 
-While we've cast this problem in the style of a generalized linear model [@Theis2016-sc], we do not limit ourselves to choices of $g$ which lead to convex optimization problems. We examine each component in turn.
+While we've cast this problem in the style of a generalized linear model [@Theis2016-sc], we do not limit ourselves to choices of $g$ which lead to convex optimization problems. We examine each component in turn[^location].
+
+[^location]: The code that fits this model can be downloaded at [https://github.com/patrickmineault/spikefinder_submission](https://github.com/patrickmineault/spikefinder_submission)
 
 ## Basis transformation $g$
 
