@@ -1,14 +1,14 @@
 ---
 # To compile to PDF:
-# pandoc -F pandoc-citeproc patrickmineault.md -o patrickmineault.pdf
+# pandoc -F pandoc-citeproc description.md -o description.pdf
 # For LaTeX:
-# pandoc -s -F pandoc-citeproc patrickmineault.md -o patrickmineault.tex
-# pdflatex patrickmineault.tex
+# pandoc -s -F pandoc-citeproc description.md -o description.tex
+# pdflatex description.tex
 title: "Spike finder submission"
 author: "Patrick Mineault"
 date: "19/05/2017"
 output: pdf_document
-bibliography: patrickmineault.bib
+bibliography: refs.bib
 ---
 
 # Introduction
@@ -27,7 +27,9 @@ Our goal is then to estimate the parameters of a basis transformation $g$ and an
 \text{s.t. } L(\mu_{ij}, y_{ij}) & \text{ is minimized}
 \end{align*}
 
-While we've cast this problem in the style of a generalized linear model [@Theis2016-sc], we do not limit ourselves to choices of $g$ which lead to convex optimization problems. We examine each component in turn.
+While we've cast this problem in the style of a generalized linear model [@Theis2016-sc], we do not limit ourselves to choices of $g$ which lead to convex optimization problems. We examine each component in turn[^location].
+
+[^location]: The code that fits this model can be downloaded at [https://github.com/patrickmineault/spikefinder_submission](https://github.com/patrickmineault/spikefinder_submission)
 
 ## Basis transformation $g$
 
@@ -122,11 +124,11 @@ We originally fit one large model for all recordings. We then created refined ve
 
 ## Summary of submissions
 
-Name     | Description                              | Test score | Train score
----------|------------------------------------------|------------|------------
-Purgatio | Learned long-range features + refinement | 0.464      | 0.581
-Inferno  | Learned long-range features              | 0.419      | 0.511
-Paradiso | Fixed long-range features                | 0.410      | 0.465
+Name       | Description                              | Test score | Train score
+-----------|------------------------------------------|------------|------------
+Purgatorio | Learned long-range features + refinement | 0.464      | 0.581
+Inferno    | Learned long-range features              | 0.419      | 0.511
+Paradiso   | Fixed long-range features                | 0.410      | 0.465
 
 ## Critique
 
