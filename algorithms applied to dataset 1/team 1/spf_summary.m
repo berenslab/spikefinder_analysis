@@ -31,6 +31,7 @@ if doall
     files = dir(fullfile(dsave,'*-dataset*.mat'));
 else
     n = length(dataflag);
+    dataflag(dataflag==2) = 92;
     files = cell(1,n);
     for i=1:n
         files{i} = row(dir(fullfile(dsave,sprintf('*-dataset%i.mat',dataflag(i)))));
@@ -57,7 +58,7 @@ for kf = 1:length(files)
     [score, idx] = max([res.score]);
     if isempty(score), continue, end
     isrunning = (now-res(end).date)<0.02;
-    resk = struct('score',score,'method',method,'parset',res(idx).parset,'running',isrunning);
+    resk = struct('score',score,'method',method,'parset',res(idx).parset,'smooth',res(idx).smooth,'delay',res(idx).delay,'running',isrunning);
     if length(summary)<(1+dataflag) || isempty(summary(1+dataflag).dataflag)
         summary(1+dataflag).dataflag = dataflag;
         summary(1+dataflag).res = resk;
@@ -94,7 +95,9 @@ for k = 1:length(summary)
             reski = resk(i);
             str = fn_switch(i==1,sprintf('Dataset %.2i: ',sk.dataflag),repmat(' ',1,12));
             runflag = fn_switch(reski.running,' [running]','');
-            fprintf('%s%.5f using %s%s\n',str,reski.score,reski.method,runflag)
+            fprintf('%s%.5f using %s%s (parset=',str,reski.score,reski.method,runflag)
+            fprintf('%.4f ',reski.parset)
+            fprintf('\b, smooth=%.4f, delay=%.4f)\n',reski.smooth,reski.delay)
         end
     elseif ~doall
         % return results structure

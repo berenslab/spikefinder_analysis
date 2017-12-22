@@ -40,7 +40,7 @@ for i=1:ncell
         end
     end
 end
-out = median(outall,2);
+out = mean(outall,2);
 [out lag] = min(out);
 outall = outall(lag,:);
 k = minlag-1+lag;
