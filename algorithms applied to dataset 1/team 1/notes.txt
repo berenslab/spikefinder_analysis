@@ -1,0 +1,6 @@
+
+Requirements:
+- https://github.com/MLspike/brick
+- https://github.com/MLspike/spikes
+
+Follow spf_main_script.m to see how MLspike was used for the SpikeFinder contest.
