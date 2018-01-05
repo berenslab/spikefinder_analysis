@@ -29,8 +29,8 @@ end
 % Different manual parameter sets are defined in function spf_parameters in
 % the form of a 3-digits code called 'methodflag'. 
 % Briefly:
-% - The 1st digits indicates whether to use MAP, proba or samples output
-% (at the end, proba output where systematically preferred), define the
+% - The 1st digit indicates whether to use MAP, proba or samples output
+% (at the end, proba output where systematically preferred), defines the
 % type of nonlinearity (sub-linear for OGB, supra-linear for GCamp) and
 % whether to use heuristics for estimating noise level (but the best
 % MLspike submission to SpikeFinder did not use them).
@@ -46,7 +46,7 @@ methodflag = best_method_flags(dataset);
 % Results are stored regularly to the 'precomp' folder, so that
 % computations can be resumed after an interruption, just by calling the
 % same command (but 'fromscratch' option forces a restart from zero).
-% Range for the parameters being estimated are defined in function
+% Ranges for the parameters being estimated are defined in function
 % spf_getrange.
 spf_train(dataflag, methodflag)
 
@@ -103,11 +103,10 @@ spf_summary
 %             0.69739 using proba523 (parset=-0.3337 -0.1606 0.1050 -0.0057 -0.4902 -2.4600, smooth=0.0224, delay=0.0100)
 %             0.68178 using proba525 (parset=-0.2330 -0.2534 0.0755 -0.0021 -0.4748 -2.4112, smooth=0.0418, delay=0.0200)
 
-
 %% Run on the test data and publish everything
 
 % The following function will first publish the training results (in the
-% 'submissions' folder), and then if test data exist for this dataset, run
+% 'submissions' folder), and then if test data exists for this dataset, run
 % MLspike on it with the current best parameters and publish the results.
 % More details on the test data estimations will also be saved in the
 % 'testres' folder.
