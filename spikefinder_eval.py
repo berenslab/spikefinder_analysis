@@ -48,7 +48,11 @@ def score(a, b, method='corr', downsample=4):
 		
         if not len(x) == len(y):
             raise Exception('mismatched lengths %s and %s' % (len(x), len(y)))
-        result.append(func(x, y))
+        
+        if func=='info':
+            result.append(func(x, y,fps=100/downsample))
+        else:
+            result.append(func(x, y))
     return result
 
 def _corr(x, y):
@@ -85,7 +89,7 @@ def _downsample(signal, factor):
         
     return convolve(asarray(signal).ravel(), ones(factor), 'valid')[::factor]
     
-def _infolik(spikes, predictions, fps=25):
+def _infolik(predictions, spikes, fps=25):
     """
     Computes log likelihood of the data and the information gain
     
