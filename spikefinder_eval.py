@@ -6,6 +6,7 @@ from numpy import array, eye, dot, empty, seterr, isnan, any, zeros_like
 from scipy.optimize import minimize
 from scipy.stats import poisson
 from scipy.interpolate import interp1d
+from sklearn.metrics import roc_curve, auc
 from pandas import read_csv
 from warnings import warn
 
@@ -71,7 +72,8 @@ def _rank(x, y):
     return spearmanr(x, y).correlation        
 
 def _auc(x, y):
-     pass
+     fpr, tpr, thresholds = roc_curve(y>0,x)
+     return auc(fpr,tpr)
 
 def _downsample(signal, factor):
     """
